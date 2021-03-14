@@ -18,16 +18,6 @@ namespace validatequotes
             return SerializationHelper.ReadFromFile<EnclaveInfo>(filePath);
         }
 
-        public AttestOpenEnclaveRequestBody GetMaaBody()
-        {
-            var maaBody = new AttestOpenEnclaveRequestBody
-            {
-                Quote = HexHelper.ConvertHexToBase64Url(QuoteHex),
-                EnclaveHeldData = HexHelper.ConvertHexToBase64Url(EnclaveHeldDataHex)
-            };
-            return maaBody;
-        }
-
         public void CompareToMaaServiceJwtToken(string serviceJwtToken, bool includeDetails)
         {
             var jwtBody = JoseHelper.ExtractJosePart(serviceJwtToken, 1);

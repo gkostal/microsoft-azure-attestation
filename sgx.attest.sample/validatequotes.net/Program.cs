@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using validatequotes.Helpers;
 
 namespace validatequotes
@@ -19,7 +21,7 @@ namespace validatequotes
         public Program(string[] args)
         {
             this.fileName = args.Length > 0 ? args[0] : "../../../genquotes/quotes/enclave.info.debug.json";
-            this.attestDnsName = args.Length > 1 ? args[1] : "sharedeus2.eus2.attest.azure.net";
+            this.attestDnsName = args.Length > 1 ? args[1] : "sharedcac.cac.attest.azure.net";
             this.includeDetails = true;
             if (args.Length > 2)
             {
@@ -49,7 +51,8 @@ namespace validatequotes
 
             // Send to service for attestation
             var maaService = new MaaService(this.attestDnsName);
-            var serviceJwtToken = await maaService.AttestOpenEnclaveAsync(enclaveInfo.GetMaaBody());
+            var responseString = await maaService.AttestOpenEnclaveAsync(new AttestOpenEnclaveRequestBody(enclaveInfo));
+            var serviceJwtToken = JObject.Parse(responseString)["token"].ToString();
 
             // Analyze results
             Logger.WriteBanner("VALIDATING MAA JWT TOKEN - BASICS");

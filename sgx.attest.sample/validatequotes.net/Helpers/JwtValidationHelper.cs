@@ -1,4 +1,4 @@
-﻿//#define LOG_BOUNCY_CASTLE
+﻿#define LOG_BOUNCY_CASTLE
 
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
