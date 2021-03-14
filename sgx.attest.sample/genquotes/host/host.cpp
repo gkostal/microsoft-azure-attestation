@@ -104,6 +104,7 @@ int main(int argc, const char* argv[])
 
     myprintf("Host: The enclave's public key: \n%s\n", pem_key);
 
+    /*
     myprintf("Host: Parsing the generated report and writing to a local file\n");
     result = oe_parse_report(remote_report, remote_report_size, &parsed_report);
     if (result != OE_OK)
@@ -116,8 +117,9 @@ int main(int argc, const char* argv[])
         goto exit;
     }
     else
+    */
     {
-        QuoteFile  myQuoteFile (parsed_report, remote_report, remote_report_size, pem_key, pem_key_size);
+        QuoteFile  myQuoteFile (remote_report, remote_report_size, pem_key, pem_key_size);
 
         printf("    JSON file created: %s\n", argv[2]);
         myQuoteFile.WriteToJsonFile("./quotes", argv[2]);

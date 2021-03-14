@@ -3,6 +3,7 @@
 class QuoteFile
 {
   private:
+    uint8_t _haveReport;
     oe_report_t _parsedReport;
     uint8_t* _enclaveHeldData;
     size_t _enclaveHeldDataSize;
@@ -11,6 +12,7 @@ class QuoteFile
 
   public:
     QuoteFile(oe_report_t parsedReport, uint8_t *quote, size_t quoteSize, uint8_t *ehd, size_t ehdSize);
+    QuoteFile(uint8_t *quote, size_t quoteSize, uint8_t *ehd, size_t ehdSize);
     void WriteToJsonFile(const char *directory, const char* jsonFileName);
     void WriteToJsonFile(FILE *fp);
 

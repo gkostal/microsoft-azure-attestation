@@ -10,6 +10,8 @@ Attestation::Attestation(Crypto* crypto)
     m_crypto = crypto;
 }
 
+static oe_uuid_t sgx_remote_uuid = {OE_FORMAT_UUID_SGX_ECDSA};
+
 /**
  * Generate a remote report for the given data. The SHA256 digest of the data is
  * stored in the report_data field of the generated remote report.
@@ -24,6 +26,24 @@ bool Attestation::generate_remote_report(
     uint8_t sha256[32];
     oe_result_t result = OE_OK;
     uint8_t* temp_buf = NULL;
+    const oe_uuid_t *format_id = &sgx_remote_uuid;
+    uint8_t* format_settings = NULL;
+    size_t format_settings_size = 0;
+    uint8_t* temp_buf2 = NULL;
+    size_t temp_buf2_size = 0;
+
+    if (oe_verifier_initialize() != OE_OK)
+    {
+        TRACE_ENCLAVE("oe_verifier_initialize failed.");
+        goto exit;
+    }
+
+    if (oe_verifier_get_format_settings(
+        format_id, &format_settings, &format_settings_size) != OE_OK)
+    {
+        TRACE_ENCLAVE("oe_verifier_get_format_settings failed.");
+        goto exit;
+    }
 
     if (m_crypto->Sha256(data, data_size, sha256) != 0)
     {
@@ -48,12 +68,31 @@ bool Attestation::generate_remote_report(
         0,
         &temp_buf,
         remote_report_buf_size);
+
     if (result != OE_OK)
     {
         TRACE_ENCLAVE("oe_get_report failed.");
         goto exit;
     }
     *remote_report_buf = temp_buf;
+
+    result = oe_get_evidence(
+        format_id,
+        0,
+        sha256,
+        sizeof(sha256),
+        NULL,
+        0,
+        remote_report_buf,
+        remote_report_buf_size,
+        &temp_buf2,
+        &temp_buf2_size);
+    if (result != OE_OK)
+    {
+        TRACE_ENCLAVE("oe_get_evidence failed.");
+        goto exit;
+    }
+
     ret = true;
     TRACE_ENCLAVE("generate_remote_report succeeded.");
 exit:

@@ -5,6 +5,11 @@
 #define OE_SAMPLES_ATTESTATION_ENC_ATTESTATION_H
 
 #include <openenclave/enclave.h>
+#include <openenclave/attestation/attester.h>
+#include <openenclave/attestation/custom_claims.h>
+#include <openenclave/attestation/verifier.h>
+#include <openenclave/attestation/sgx/evidence.h>
+#include <openenclave/bits/report.h>
 #include "crypto.h"
 
 #define ENCLAVE_SECRET_DATA_SIZE 16
